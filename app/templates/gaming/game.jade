@@ -1,0 +1,47 @@
+extends "base.jade"
+block navbar
+block breadcrumbs
+block content
+    .spacer-top-3
+    .row
+        .col-sm-2
+            .row
+                ul.list-group.spacer-top-3
+                    each gamer in room.gamers
+                        li.list-group-item EID #{gamer.id} #{'(you)' if gamer.id == current_user.id else ''}
+            .row
+                .panel.panel-success
+                    .panel-body
+                        each r in current_user.get_show_variables()
+                            .row #{r | safe}
+        .col-sm-8.col-sm-offset-1
+            - var cr = round + 1
+            .lead.text-primary Round #{cr} - #{stage.display_name}
+            if active
+                form(method='post', class='form', action=url_for('gaming'))
+                    .panel.panel-primary
+                        .panel-body
+                            .row
+                                .col-sm-12
+                                    if stage.clazz == 'input'
+                                        .form-group
+                                            label.control-label.spacer-right-1 #{stage.description}
+                                            input.form-control(name='action-input', type='text')
+                                    elif stage.clazz == 'options'
+                                        .form-group
+                                            label.control-label #{stage.description}
+                                            for f in stage.options.split(';')
+                                                .radio
+                                                    label
+                                                        input(name='action-input', type='radio', value='#{f}')
+                                                        | #{f}
+                        .panel-footer
+                            .row
+                                .col-sm-12
+                                    input.btn.btn-primary.pull-right(type='submit')
+            else
+                .lead Waiting for other group members...
+block scripts
+    = super() | safe
+    script(src="/static/js/gt-client.js")
+

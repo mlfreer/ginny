@@ -1,0 +1,69 @@
+extends "base.jade"
+block breadcrumbs
+    = super() | safe
+    +breadcrumb(url_for('game', id = game.id), game.title)
+block content
+    #gamer_trial_id.hidden #{game_trial.id}
+    if not game_trial.started
+        form(method='post', action=url_for('game_trial_update', game_id = game.id, id = game_trial.id))
+            = form.csrf_token
+                .row
+                    .col-sm-4
+                        label Unique ID:
+                        div.spacer-bottom-2.lead #{game_trial.string_id}
+                        +field_tz
+                        +field(form.start_time, class='form-control moment-time-val datetimepicker', onkeydown="return false")
+                        +field(form.size_of_room, autocomplete="off")
+                    .col-sm-8
+                        div#gamers
+                            each gamer in game_trial.gamers
+                                span.label.label-primary.spacer-right-1(id='gamer_badge_#{gamer.id}') Gamer #{gamer.id}
+                                    span.spacer-left-1(data-href=url_for('game_trial_kick', game_id = game.id, id = game_trial.id, gamer_id = gamer.id)) ⨉
+                .row.spacer-bottom-1
+                    .pull-right
+                        label Joined gamers count:
+                        span#gamer-count.spacer-left-2.spacer-top-1 #{game_trial.gamers.count()}
+                .row
+                    .col-sm-4
+                        .pull-right
+                            input.btn.btn-primary(type='submit', value='Save')
+                    .col-sm-8
+                        .pull-right
+                            a.btn.btn-primary.spacer-right-1(href=url_for('game_trial_open_switch', game_id = game.id, id = game_trial.id)) #{'Close registration' if game_trial.opened else 'Open registration'}
+                            a.btn.btn-primary(onclick="return confirm('Are you sure?')", href=url_for('game_trial_start', game_id = game.id, id = game_trial.id)) Start the game
+    else
+        each room, i in game_trial.rooms
+            if i % 2 == 0
+                .row
+                    each real_room, j in game_trial.rooms.slice(i, i+2)
+                        .col-sm-6
+                            +cond_row(real_room)
+        .row
+            .pull-right
+                a(href=url_for('game_trial_download_gamer_actions', game_id = game.id, id = game_trial.id))
+                    span.glyphicon.glyphicon-download
+block scripts
+    = super() | safe
+    script(src="/static/js/gt-manage.js")
+mixin cond_row(room)
+    - var klass = 'panel-success' if room.is_finished() else 'panel-default'
+    .panel(class=klass)
+        .panel-heading
+            h3.panel-title Room #{room.id}
+        .panel-body
+            .row
+                .col-sm-8
+                    div.list-group
+                        each gamer in room.gamers
+                            div.list-group-item
+                                h5.list-group-item-heading Gamer #{gamer.id}
+                                p.list-group-item-text
+                                    each k in gamer.variables.keys()|sort
+                                        .small #{k + ': ' + gamer.variables[k]}
+                .col-sm-4
+                    if room.finished
+                        - var cr = room.get_current_round()
+                        p Last round: #{cr}
+                    else
+                        - var cr = room.get_current_round() + 1
+                        p Current round: #{cr}

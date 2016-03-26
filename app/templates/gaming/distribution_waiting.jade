@@ -1,0 +1,13 @@
+extends "base.jade"
+block breadcrumbs
+block content
+    .row
+        .col-sm-offset-3.col-sm-6
+            .text-center.text-primary
+                .lead Waiting for the experiment to begin...
+                .lead Your EID: &nbsp;
+                    b #{current_user.id}
+block scripts
+    = super() | safe
+    script(src="/static/js/gt-client.js")
+

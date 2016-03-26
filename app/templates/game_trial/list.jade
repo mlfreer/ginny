@@ -1,0 +1,9 @@
+if game_trials|length > 0
+    div.list-group
+        each game_trial in game_trials
+            a.list-group-item(href=url_for('game_trial', game_id=game.id, id=game_trial.id))
+                span.badge #{game_trial.gamers.count()}
+                span #{'Session at '}
+                span.moment-time-text #{game_trial.start_time}
+else
+    .lead No session created yet

@@ -1,0 +1,5 @@
+table.table.table-condensed.table-hover
+    each stage in stages
+        tr(data-href=url_for('stage', id=stage.id))
+            td.lead ID: #{stage.id}
+            td.lead #{stage.display_name}

@@ -1,0 +1,12 @@
+extends "base.jade"
+block breadcrumbs
+block content
+    .row
+        .col-sm-offset-4.col-sm-4
+            .text-center
+                .panel.panel-default
+                    .panel-heading Enter Unique ID
+                    .panel-body
+                        form(method='post', action=url_for('gaming_join'))
+                            input.form-control(name='unique-id', type='text')
+

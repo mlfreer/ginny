@@ -1,0 +1,11 @@
+extends "base.jade"
+block breadcrumbs
+block content
+    .row
+        .col-sm-offset-3.col-sm-6
+            .text-center.text-primary
+                .lead Waiting for other players to make move...
+
+block scripts
+    = super() | safe
+    script(src="/static/js/gt-client.js")

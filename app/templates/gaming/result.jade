@@ -1,0 +1,9 @@
+extends "base.jade"
+block breadcrumbs
+block content
+    .row
+        .col-sm-offset-3.col-sm-6
+            each r in variables
+                .row.lead #{r|safe}
+    .row
+        a.btn.btn-primary.pull-right(href=url_for("gaming_shown")) Continue

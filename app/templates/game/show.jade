@@ -1,0 +1,47 @@
+extends "base.jade"
+block styles
+    = super() | safe
+    link(rel='stylesheet', href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.10.0/codemirror.min.css")
+block content
+    .col-sm-3
+        ul.nav.nav-pills.nav-stacked(role="tablist")
+            li.active(role="presentation")
+                a(href="#sessions", aria-controls="sessions", role="tab", data-toggle="tab")
+                    | Sessions
+            li(role="presentation")
+                a(href="#settings", aria-controls="settings", role="tab", data-toggle="tab")
+                    | Settings
+    .col-sm-9
+        .tab-content
+            #sessions.tab-pane.active(role="tabpanel")
+                .row
+                    - var game_trials = game.game_trials|list
+                    include ./game_trial/list.jade
+                .row
+                    a.btn.btn-primary.pull-right(href=url_for('game_trial_new', game_id = game.id)) Create New Session
+            #settings.tab-pane(role="tabpanel")
+                form(method='post', action=url_for('game_update', id = game.id, _anchor='settings'))
+                    .row
+                        +field(form.title, autocomplete="off")
+                        +field(form.gamer_dynamics, id='gamer-dynamics')
+                    .row
+                        input.btn.btn-primary.pull-right(type='submit', value='Save')
+block scripts
+    = super() | safe
+    script(src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.10.0/codemirror.min.js")
+    script(src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.10.0/mode/python/python.min.js")
+    script.
+        var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("gamer-dynamics"),
+                {
+                    mode: {
+                        name: "python",
+                        version: 3,
+                    },
+                    indentUnit: 4,
+                    matchBrackets: true
+                });
+        $("a[href='#settings']").on('shown.bs.tab', function (e) {
+            setTimeout(function () {
+                myCodeMirror.refresh();
+            }, 1);
+        })

@@ -1,0 +1,14 @@
+extends "base.jade"
+block breadcrumbs
+    = super() | safe
+    +breadcrumb(url_for('manage', _anchor='stages'), 'Stages')
+block content
+    form(method='post', action=url_for('stage_update', id = stage.id))
+        .row
+            +field(form.name)
+            +field(form.display_name)
+            +field(form.description)
+            +field(form.clazz)
+            +field(form.options)
+        .row
+            input.btn.btn-primary.pull-right(type='submit', value='Save')

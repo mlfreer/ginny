@@ -1,0 +1,96 @@
+extends "bootstrap/base.html"
+block styles
+    = super() | safe
+    link(rel='stylesheet',href='/static/css/null.css')
+    link(rel='stylesheet',href='/static/css/custom.css')
+    link(rel='stylesheet',href='/static/css/bootstrap-multiselect.css')
+    link(rel='stylesheet',href='/static/css/bootstrap-datepicker3.min.css')
+    link(rel='stylesheet',href='/static/css/bootstrap-datetimepicker.min.css')
+block title
+    if title
+        | Experiment | #{title}
+    else
+        | Experiment
+block body
+    .wrapper
+        .content
+            .container
+                block navbar
+                    nav.navbar.navbar-default
+                        .container-fluid
+                            .navbar-header
+                                a.navbar-brand(href="/") Experiment
+                            ul.nav.navbar-nav
+                                if current_user.is_authenticated and current_user.has_role('admin')
+                                    li
+                                        a(href='#{url_for('admin')}') Admin
+                            ul.nav.navbar-nav.navbar-right
+                                if current_user.is_authenticated
+                                    if current_user.has_role('manager')
+                                        li
+                                            a(href='#{url_for("manage")}') Manage
+                                    li
+                                        a(href='#{url_for("logout")}') Logout
+                                else
+                                    li
+                                        a(href='#{url_for("login")}') Login
+            .row
+                .col-sm-offset-1.col-sm-10
+                    - var messages = get_flashed_messages(with_categories=true)
+                    if messages
+                        for category, message in messages
+                            div(class='alert alert-#{category}')
+                                button.close(data-dismiss="alert") ×
+                                = message
+                    block breadcrumbs
+                        +breadcrumb('/', 'Experiment')
+                    .spacer-top-2
+                        block content
+        footer.footer
+            .container
+                .pull-right
+                    a(href="https://vk.com/pashapodolsky") Pasha Podolsky
+                    |  (c) 2016
+        block scripts
+            = super() | safe
+            script(src="https://cdn.socket.io/socket.io-1.3.7.js")
+            script(src="/static/js/moment.min.js")
+            script(src="/static/js/bootstrap-multiselect.js")
+            script(src="/static/js/bootstrap-datepicker.min.js")
+            script(src="/static/js/bootstrap-datetimepicker.min.js")
+            script(src="/static/js/jquery.countdown.min.js")
+            script(src="/static/js/jquery.numeric.min.js")
+            script(src="/static/js/init.js")
+
+
+mixin quickform(form, action='.', submit_text='Submit')
+  form(method='post', action=action)
+    = form.csrf_token
+      .row
+        .col-sm-12
+          each f in form
+            +field(f)
+      .row
+        .col-sm-3.col-sm-offset-9
+          input.btn.btn-primary.btn-block.spacer-top-3(type='submit', value=submit_text)
+
+mixin field(f, class='form-control', required=None, clearfix=True)
+  - var _required = f.flags.required if required is none else required
+  div(class='form-group #{"has-error" if f.errors else ""} #{"required" if _required else ""}')
+    = f.label(class='control-label')
+    if clearfix
+      .clearfix
+    = f(class=class, **kwargs)|safe
+    if f.description and not f.errors
+      small.help-block
+        = f.description
+    if f.errors
+      small.text-danger
+        for error in f.errors
+          = error
+          br
+mixin field_tz
+  input(type='hidden', name='tz')
+mixin breadcrumb(link, title)
+    a.lead(href=link) #{title}
+    span.lead #{" / "}

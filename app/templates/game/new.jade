@@ -1,0 +1,13 @@
+extends "base.jade"
+block content
+    form(method='post', action=url_for('game_create'))
+        = form.csrf_token
+        .row
+            .col-sm-offset-2.col-sm-8
+                .row
+                    .col-sm-6
+                        +field(form.title, autocomplete="off", autofocus="on")
+                +field(form.gamer_dynamics, rows=15, autocomplete="off", autocorrect="off", autocapitalize="off", spellcheck="false")
+        .row
+            .col-sm-offset-2.col-sm-8
+                input.btn.btn-primary.pull-right(type='submit', value='Create New Game')

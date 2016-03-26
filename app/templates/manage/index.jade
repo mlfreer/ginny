@@ -1,0 +1,17 @@
+extends "base.jade"
+block content
+    .col-sm-3
+        ul.nav.nav-pills.nav-stacked(role="tablist")
+            li.active(role="presentation")
+                a(href="#games", aria-controls="games", role="tab", data-toggle="tab")
+                    | Games
+            li(role="presentation")
+                a(href="#stages", aria-controls="stages", role="tab", data-toggle="tab")
+                    | Stages
+    .col-sm-9
+        .tab-content
+            #games.tab-pane.active(role="tabpanel")
+                include ./game/list.jade
+                a.btn.btn-primary.pull-right(href=url_for('game_new')) Create New Game
+            #stages.tab-pane(role="tabpanel")
+                include ./stage/list.jade

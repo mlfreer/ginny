@@ -1,0 +1,9 @@
+extends "base.jade"
+block content
+    form(method='post',action=url_for('login'))
+        = form.csrf_token
+        .row
+            .col-sm-offset-4.col-sm-4.well
+                +field(form.email, required=False)
+                +field(form.password, required=False)
+                input.btn.btn-default.btn-block.spacer-top-3(type='submit', value='Sign in')

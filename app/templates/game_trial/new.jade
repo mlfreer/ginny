@@ -1,0 +1,12 @@
+extends "base.jade"
+block content
+    form(method='post', action=url_for('game_trial_create', game_id = game.id))
+        = form.csrf_token
+        .row
+            .col-sm-3
+                +field_tz
+                +field(form.start_time, class='form-control datetimepicker')
+                +field(form.size_of_room)
+        .row
+            .col-sm-3.col-sm-offset-9
+                input.btn.btn-primary.btn-block.spacer-top-3(type='submit', value='Create')

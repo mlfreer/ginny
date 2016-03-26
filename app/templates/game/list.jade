@@ -1,0 +1,5 @@
+table.table.table-condensed.table-hover
+    each game in games
+        tr
+            td.lead(data-href=url_for('game', id=game.id))
+                |  #{game.title}
